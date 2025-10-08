@@ -1,0 +1,23 @@
+# Build files
+cmake-build-debug/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.o
+*.obj
+*.a
+*.so
+*.exe
+
+# IDE files
+.idea/
+*.iml
+
+# Backup and temporary files
+*.swp
+*~
+.DS_Store
+
+# Logs
+*.log
