@@ -1,4 +1,26 @@
-#ifndef SEABATTLEBOT_PLAYER_HPP
-#define SEABATTLEBOT_PLAYER_HPP
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
 
-#endif //SEABATTLEBOT_PLAYER_HPP
+#include <string>
+#include "Board.hpp"
+
+class Player {
+public:
+    Player(std::string id, std::string name);
+
+    Board& getBoard();
+    [[nodiscard]] const Board& getBoard() const;
+
+    void placeShips();
+    static bool attack(Board &opponentBoard, int x, int y);
+
+    std::string getId() const;
+    std::string getName() const;
+
+private:
+    std::string m_id;
+    std::string m_name;
+    Board m_board;
+};
+
+#endif // PLAYER_HPP
