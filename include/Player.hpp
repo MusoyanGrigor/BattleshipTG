@@ -11,7 +11,7 @@ public:
     Board& getBoard();
     [[nodiscard]] const Board& getBoard() const;
 
-    void placeShips();
+    void placeShips(std::size_t shipCount);
 
     static bool attack(Player& opponent, int x, int y); // instance method
 
