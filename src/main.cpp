@@ -1,20 +1,17 @@
-#include <tgbot/tgbot.h>
-#include <iostream>
+#include "TelegramBot.hpp"
+#include <cstdlib>
+#include <ctime>
+#include <string>
 
 int main() {
-    const std::string TELEGRAM_BOT_TOKEN = "Your Token";
-    TgBot::Bot bot(TELEGRAM_BOT_TOKEN);
+    // Seed random number generator for ship placement
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
-    bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) {
-        bot.getApi().sendMessage(message->chat->id, "Sea Battle Bot is running! Type /newgame to start.");
-    });
+    // Replace with your actual Telegram Bot API token
+    const std::string token = "Your bot token";
 
-    try {
-        bot.getApi().deleteWebhook();
-        TgBot::TgLongPoll longPoll(bot);
-        std::cout << "Bot started..." << std::endl;
-        while (true) longPoll.start();
-    } catch (std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
+    TelegramBot bot(token);
+    bot.start();  // Start polling and handling commands
+
+    return 0;
 }
