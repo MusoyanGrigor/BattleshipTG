@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/SeaBattleBot.dir/src/main.cpp.o -o SeaBattleBot  /usr/local/lib64/libTgBot.a /usr/lib64/libz.so /usr/lib64/libssl.so /usr/lib64/libcrypto.so /usr/lib64/libboost_system.so.1.83.0 /usr/lib64/libcurl.so

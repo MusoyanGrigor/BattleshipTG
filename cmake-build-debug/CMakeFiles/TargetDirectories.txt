@@ -1,0 +1,3 @@
+/home/grigor/Projects/SeaBattleBot/cmake-build-debug/CMakeFiles/SeaBattleBot.dir
+/home/grigor/Projects/SeaBattleBot/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/grigor/Projects/SeaBattleBot/cmake-build-debug/CMakeFiles/rebuild_cache.dir
