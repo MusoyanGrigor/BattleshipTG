@@ -8,13 +8,13 @@ Player::Player(std::string id, std::string name)
 Board& Player::getBoard() { return m_board; }
 const Board& Player::getBoard() const { return m_board; }
 
-void Player::placeShips() {
+void Player::placeShips(const std::size_t shipCount = 5) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(0, 9);
 
     int placed = 0;
-    while (placed < 5) {
+    while (placed < shipCount) {
         const int x = dist(gen);
         const int y = dist(gen);
         if (m_board.placeShip(x, y)) placed++;

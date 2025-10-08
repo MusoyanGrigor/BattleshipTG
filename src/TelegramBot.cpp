@@ -36,11 +36,11 @@ void TelegramBot::start() {
 void TelegramBot::handleNewGameCommand(const TgBot::Bot& bot, const TgBot::Message::Ptr &message) {
     const std::string chatId = std::to_string(message->chat->id);
     const std::string gameID = generateGameID();
-
+    constexpr std::size_t shipCount = 9;
     auto player1 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
-    player1->placeShips();
+    player1->placeShips(shipCount);
 
-    auto game = std::make_shared<Game>(gameID, player1);
+    const auto game = std::make_shared<Game>(gameID, player1);
     gamesByID[gameID] = game;
     chatToGame[chatId] = gameID;
 
@@ -58,14 +58,14 @@ void TelegramBot::handleJoinCommand(const TgBot::Bot& bot, const TgBot::Message:
         return;
     }
 
-    auto game = gamesByID[gameID];
+    const auto game = gamesByID[gameID];
     if (game->player2 != nullptr) {
         bot.getApi().sendMessage(message->chat->id, "Game already has two players.");
         return;
     }
 
-    auto player2 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
-    player2->placeShips();
+    const auto player2 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
+    player2->placeShips(5);
     game->player2 = player2;
     game->state = GameState::IN_PROGRESS;
     chatToGame[std::to_string(message->chat->id)] = gameID;
