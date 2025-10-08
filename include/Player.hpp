@@ -12,7 +12,8 @@ public:
     [[nodiscard]] const Board& getBoard() const;
 
     void placeShips();
-    static bool attack(Board &opponentBoard, int x, int y);
+
+    static bool attack(Player& opponent, int x, int y); // instance method
 
     std::string getId() const;
     std::string getName() const;

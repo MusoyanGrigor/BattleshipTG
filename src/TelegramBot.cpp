@@ -1,6 +1,5 @@
 #include "TelegramBot.hpp"
 #include "Player.hpp"
-#include <cstdlib>
 #include <sstream>
 #include <random>
 
@@ -11,7 +10,8 @@ void TelegramBot::start() {
     TgBot::TgLongPoll longPoll(bot);
 
     bot.getEvents().onCommand("start", [&bot](const TgBot::Message::Ptr& message) {
-        handleStartCommand(bot, message);
+        bot.getApi().sendMessage(message->chat->id,
+            "Welcome to Sea Battle! 🛳\nUse /newgame to start a game.");
     });
 
     bot.getEvents().onCommand("newgame", [this, &bot](const TgBot::Message::Ptr& message) {
@@ -33,24 +33,19 @@ void TelegramBot::start() {
     }
 }
 
-
-void TelegramBot::handleStartCommand(const TgBot::Bot& bot, const TgBot::Message::Ptr &message) {
-    bot.getApi().sendMessage(message->chat->id, "Welcome to Sea Battle! 🛳\nUse /newgame to start a game.");
-}
-
 void TelegramBot::handleNewGameCommand(const TgBot::Bot& bot, const TgBot::Message::Ptr &message) {
     const std::string chatId = std::to_string(message->chat->id);
     const std::string gameID = generateGameID();
 
-    const auto player1 = new Player(std::to_string(message->from->id), message->from->firstName);
+    auto player1 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
     player1->placeShips();
 
-    auto game = new Game(gameID, player1);
+    auto game = std::make_shared<Game>(gameID, player1);
     gamesByID[gameID] = game;
     chatToGame[chatId] = gameID;
 
-    const std::string reply = "New game created! Share this code with your friend to join: " + gameID;
-    bot.getApi().sendMessage(message->chat->id, reply);
+    bot.getApi().sendMessage(message->chat->id,
+        "New game created! Share this code: " + gameID);
 }
 
 void TelegramBot::handleJoinCommand(const TgBot::Bot& bot, const TgBot::Message::Ptr &message) {
@@ -63,13 +58,13 @@ void TelegramBot::handleJoinCommand(const TgBot::Bot& bot, const TgBot::Message:
         return;
     }
 
-    Game* game = gamesByID[gameID];
+    auto game = gamesByID[gameID];
     if (game->player2 != nullptr) {
         bot.getApi().sendMessage(message->chat->id, "Game already has two players.");
         return;
     }
 
-    auto player2 = new Player(std::to_string(message->from->id), message->from->firstName);
+    auto player2 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
     player2->placeShips();
     game->player2 = player2;
     game->state = GameState::IN_PROGRESS;
@@ -86,15 +81,13 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
         return;
     }
 
-    Game* game = gamesByID[chatToGame[chatId]];
-
+    auto game = gamesByID[chatToGame[chatId]];
     if (game->state != GameState::IN_PROGRESS) {
         bot.getApi().sendMessage(message->chat->id, "Game not in progress yet.");
         return;
     }
 
-    Player* player = (game->player1->getId() == chatId) ? game->player1 : game->player2;
-
+    Player* player = (game->player1->getId() == chatId) ? game->player1.get() : game->player2.get();
     if (player != game->getCurrentPlayer()) {
         bot.getApi().sendMessage(message->chat->id, "Not your turn!");
         return;
@@ -106,28 +99,35 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
         return;
     }
 
+    if (x < 0 || x > 9 || y < 0 || y > 9) {
+        bot.getApi().sendMessage(message->chat->id, "Coordinates must be between 0 and 9.");
+        return;
+    }
+
     const bool hit = game->makeMove(player, x, y);
-    const std::string result = hit ? "💥 Hit!" : "🌊 Miss!";
-    bot.getApi().sendMessage(message->chat->id, result);
+    bot.getApi().sendMessage(message->chat->id, hit ? "💥 Hit!" : "🌊 Miss!");
 
     const Player* opponent = game->getOpponent(player);
-    bot.getApi().sendMessage(std::stoll(opponent->getId()), player->getName() + " made a move at (" + std::to_string(x) + "," + std::to_string(y) + ")");
+    bot.getApi().sendMessage(std::stoll(opponent->getId()),
+        player->getName() + " made a move at (" + std::to_string(x) + "," + std::to_string(y) + ")");
 
+    // Send boards after move
+    bot.getApi().sendMessage(chatId, "Your board:\n<pre>" + player->getBoard().displayForOwner() + "</pre>");
+    bot.getApi().sendMessage(chatId, "Opponent's board:\n<pre>" + opponent->getBoard().displayForOpponent() + "</pre>");
+
+    // Check win
     if (game->checkWin()) {
         bot.getApi().sendMessage(std::stoll(player->getId()), "🎉 You won!");
         bot.getApi().sendMessage(std::stoll(opponent->getId()), "😢 You lost!");
-        gamesByID.erase(game->gameID);
+
         chatToGame.erase(game->player1->getId());
         chatToGame.erase(game->player2->getId());
-        delete game->player1;
-        delete game->player2;
-        delete game;
+        gamesByID.erase(game->gameID);
     }
 }
 
 std::string TelegramBot::generateGameID() {
-    static constexpr char alphanum[] =
-        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static constexpr char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, sizeof(alphanum) - 2);

@@ -13,7 +13,9 @@ public:
 
     bool placeShip(int x, int y);
     bool receiveAttack(int x, int y);
-    [[nodiscard]] std::string display() const;
+
+    [[nodiscard]] std::string displayForOwner() const;
+    [[nodiscard]] std::string displayForOpponent() const;
 
 private:
     std::vector<std::vector<Cell>> m_grid;

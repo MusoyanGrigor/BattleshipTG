@@ -21,8 +21,8 @@ void Player::placeShips() {
     }
 }
 
-bool Player::attack(Board &opponentBoard, const int x, const int y) {
-    return opponentBoard.receiveAttack(x, y);
+bool Player::attack(Player& opponent, const int x, const int y) {
+    return opponent.getBoard().receiveAttack(x, y);
 }
 
 std::string Player::getId() const { return m_id; }

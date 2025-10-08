@@ -10,8 +10,8 @@ const std::vector<std::vector<Cell>>& Board::getGrid() const {
 
 bool Board::placeShip(const int x, const int y) {
     if (x < 0 || x >= m_size || y < 0 || y >= m_size) return false;
-    if (!m_grid[x][y].hasShip) {
-        m_grid[x][y].hasShip = true;
+    if (!m_grid[y][x].hasShip) { // swap indices for row/col
+        m_grid[y][x].hasShip = true;
         return true;
     }
     return false;
@@ -19,16 +19,40 @@ bool Board::placeShip(const int x, const int y) {
 
 bool Board::receiveAttack(const int x, const int y) {
     if (x < 0 || x >= m_size || y < 0 || y >= m_size) return false;
-    m_grid[x][y].isHit = true;
-    return m_grid[x][y].hasShip;
+    m_grid[y][x].isHit = true; // swap indices for row/col
+    return m_grid[y][x].hasShip;
 }
 
-std::string Board::display() const {
-    std::string result;
+std::string Board::displayForOwner() const {
+    std::string result = "  ";
+    for (int i = 0; i < m_size; ++i) result += std::to_string(i) + " ";
+    result += "\n";
+
+    int rowNum = 0;
     for (const auto &row : m_grid) {
+        result += std::to_string(rowNum++) + " ";
         for (const auto &cell : row) {
             if (cell.isHit) result += (cell.hasShip ? "💥" : "🌊");
             else result += (cell.hasShip ? "🚢" : "⬜");
+            result += " ";
+        }
+        result += "\n";
+    }
+    return result;
+}
+
+std::string Board::displayForOpponent() const {
+    std::string result = "  ";
+    for (int i = 0; i < m_size; ++i) result += std::to_string(i) + " ";
+    result += "\n";
+
+    int rowNum = 0;
+    for (const auto &row : m_grid) {
+        result += std::to_string(rowNum++) + " ";
+        for (const auto &cell : row) {
+            if (cell.isHit) result += (cell.hasShip ? "💥" : "🌊");
+            else result += "⬜"; // hide unhit ships
+            result += " ";
         }
         result += "\n";
     }
