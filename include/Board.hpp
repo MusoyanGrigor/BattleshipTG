@@ -1,5 +1,5 @@
-#ifndef SEABATTLEBOT_BOARD_HPP
-#define SEABATTLEBOT_BOARD_HPP
+#ifndef BOARD_HPP
+#define BOARD_HPP
 
 #include <vector>
 #include <string>
@@ -20,4 +20,4 @@ private:
     std::size_t m_size;
 };
 
-#endif // SEABATTLEBOT_BOARD_HPP
+#endif // BOARD_HPP
