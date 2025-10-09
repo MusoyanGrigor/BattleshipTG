@@ -1,4 +1,6 @@
-#pragma once
+#ifndef TELEGRAMBOT_HPP
+#define TELEGRAMBOT_HPP
+
 #include <tgbot/tgbot.h>
 #include <unordered_map>
 #include <string>
@@ -21,3 +23,5 @@ private:
 
     static std::string generateGameID();
 };
+
+#endif // TELEGRAMBOT_HPP
