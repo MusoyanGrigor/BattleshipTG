@@ -1,39 +1,71 @@
 #include "Game.hpp"
 
 Game::Game(std::string id, std::shared_ptr<Player> p1)
-    : gameID(std::move(id)), player1(std::move(p1)), player2(nullptr),
-      currentTurn(1), state(GameState::WAITING_FOR_PLAYER) {}
-
-Player* Game::getCurrentPlayer() {
-    return currentTurn == 1 ? player1.get() : player2.get();
+    : m_gameID(std::move(id)),
+      m_player1(std::move(p1)),
+      m_player2(nullptr),
+      m_currentTurn(1),
+      m_state(GameState::WAITING_FOR_PLAYER) {
 }
 
-const Player* Game::getCurrentPlayer() const {
-    return currentTurn == 1 ? player1.get() : player2.get();
+// Getters
+std::string Game::getGameID() const { return m_gameID; }
+std::shared_ptr<Player> Game::getPlayer1() const { return m_player1; }
+std::shared_ptr<Player> Game::getPlayer2() const { return m_player2; }
+int Game::getCurrentTurn() const { return m_currentTurn; }
+GameState Game::getGameState() const { return m_state; }
+
+void Game::setPlayer1(std::shared_ptr<Player> p1) {
+    m_player1 = std::move(p1);
+    if (m_player1 && m_player2) m_state = GameState::IN_PROGRESS;
 }
 
-Player* Game::getOpponent(Player* player) const {
-    return (player == player1.get()) ? player2.get() : player1.get();
+// Setter for player 2
+void Game::setPlayer2(std::shared_ptr<Player> p2) {
+    m_player2 = std::move(p2);
+    if (m_player1 && m_player2) m_state = GameState::IN_PROGRESS;
 }
 
-const Player* Game::getOpponent(const Player* player) const {
-    return (player == player1.get()) ? player2.get() : player1.get();
+// Current player
+Player *Game::getCurrentPlayer() {
+    return (m_currentTurn == 1) ? m_player1.get() : m_player2.get();
 }
 
-bool Game::makeMove(Player* player, const int x, const int y) {
-    if (state != GameState::IN_PROGRESS) return false;
+const Player *Game::getCurrentPlayer() const {
+    return (m_currentTurn == 1) ? m_player1.get() : m_player2.get();
+}
+
+// Opponent
+Player *Game::getOpponent(Player *player) const {
+    if (!player) return nullptr;
+    return (player == m_player1.get()) ? m_player2.get() : m_player1.get();
+}
+
+const Player *Game::getOpponent(const Player *player) const {
+    if (!player) return nullptr;
+    return (player == m_player1.get()) ? m_player2.get() : m_player1.get();
+}
+
+// Make move
+bool Game::makeMove(Player *player, const int x, const int y) {
+    if (m_state != GameState::IN_PROGRESS) return false;
+    if (!player || !getOpponent(player)) return false;
     if (player != getCurrentPlayer()) return false;
 
     const bool hit = player->attack(*getOpponent(player), x, y);
-    currentTurn = 3 - currentTurn;
+    m_currentTurn = 3 - m_currentTurn; // Switch turn
     return hit;
 }
 
+// Check win
 bool Game::checkWin() const {
-    const Player* opponent = getOpponent(getCurrentPlayer());
-    const auto& grid = opponent->getBoard().getGrid();
-    for (const auto &row : grid)
-        for (const auto &cell : row)
+    const Player *opponent = getOpponent(getCurrentPlayer());
+    if (!opponent) return false;
+
+    const auto &grid = opponent->getBoard().getGrid();
+    for (const auto &row: grid)
+        for (const auto &cell: row)
             if (cell.hasShip && !cell.isHit) return false;
+
     return true;
 }
