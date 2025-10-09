@@ -2,8 +2,9 @@
 #include "Player.hpp"
 #include <sstream>
 #include <random>
+#include <utility>
 
-TelegramBot::TelegramBot(const std::string& _token) : token(_token) {}
+TelegramBot::TelegramBot(std::string  _token) : token(std::move(_token)) {}
 
 void TelegramBot::start() {
     TgBot::Bot bot(token);
@@ -26,10 +27,10 @@ void TelegramBot::start() {
         handleMoveCommand(bot, message);
     });
 
-    printf("Bot started...\n");
+    std::cout << "Bot started..." << '\n';
     while (true) {
         try { longPoll.start(); }
-        catch (const std::exception &e) { printf("Polling error: %s\n", e.what()); }
+        catch (const std::exception &e) { std::cout << "Polling error: %s"<<'\n' << e.what(); }
     }
 }
 
@@ -93,8 +94,14 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
         return;
     }
 
-    int x, y;
-    if (sscanf(message->text.c_str(), "/move %d %d", &x, &y) != 2) {
+    const std::string text = message->text;
+    std::istringstream iss(text);
+
+    std::string command{""};
+    int x{0};
+    int y{0};
+
+    if (!(iss >> command >> x >> y) || command != "/move") {
         bot.getApi().sendMessage(message->chat->id, "Invalid format. Use /move x y");
         return;
     }
@@ -112,8 +119,8 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
         player->getName() + " made a move at (" + std::to_string(x) + "," + std::to_string(y) + ")");
 
     // Send boards after move
-    bot.getApi().sendMessage(chatId, "Your board:\n<pre>" + player->getBoard().displayForOwner() + "</pre>");
-    bot.getApi().sendMessage(chatId, "Opponent's board:\n<pre>" + opponent->getBoard().displayForOpponent() + "</pre>");
+    bot.getApi().sendMessage(chatId, "Your board:\n" + player->getBoard().displayForOwner());
+    bot.getApi().sendMessage(chatId, "Opponent's board:\n" + opponent->getBoard().displayForOpponent());
 
     // Check win
     if (game->checkWin()) {

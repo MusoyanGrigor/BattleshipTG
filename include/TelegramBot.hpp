@@ -11,7 +11,7 @@ public:
     std::unordered_map<std::string, std::shared_ptr<Game>> gamesByID;
     std::unordered_map<std::string, std::string> chatToGame;
 
-    explicit TelegramBot(const std::string& _token);
+    explicit TelegramBot(std::string  _token);
     void start();
 
 private:
