@@ -7,11 +7,13 @@ Player::Player(std::string id, std::string name)
 
 Board& Player::getBoard() { return m_board; }
 const Board& Player::getBoard() const { return m_board; }
+std::string Player::getId() const { return m_id; }
+std::string Player::getName() const { return m_name; }
 
 void Player::placeShips(const std::size_t shipCount = 5) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(0, 9);
+    std::uniform_int_distribution dist(0, 9);
 
     int placed = 0;
     while (placed < shipCount) {
@@ -24,6 +26,3 @@ void Player::placeShips(const std::size_t shipCount = 5) {
 bool Player::attack(Player& opponent, const int x, const int y) {
     return opponent.getBoard().receiveAttack(x, y);
 }
-
-std::string Player::getId() const { return m_id; }
-std::string Player::getName() const { return m_name; }

@@ -10,13 +10,12 @@ public:
 
     Board& getBoard();
     [[nodiscard]] const Board& getBoard() const;
+    std::string getId() const;
+    std::string getName() const;
 
     void placeShips(std::size_t shipCount);
 
     static bool attack(Player& opponent, int x, int y); // instance method
-
-    std::string getId() const;
-    std::string getName() const;
 
 private:
     std::string m_id;
