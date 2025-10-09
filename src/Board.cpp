@@ -8,6 +8,10 @@ const std::vector<std::vector<Cell>>& Board::getGrid() const {
     return m_grid;
 }
 
+std::size_t Board::getSize() const {
+    return m_size;
+}
+
 bool Board::placeShip(const int x, const int y) {
     if (x < 0 || x >= m_size || y < 0 || y >= m_size) return false;
     if (!m_grid[y][x].hasShip) { // swap indices for row/col
@@ -25,7 +29,7 @@ bool Board::receiveAttack(const int x, const int y) {
 
 std::string Board::displayForOwner() const {
     std::string result = "  ";
-    for (int i = 0; i < m_size; ++i) result += std::to_string(i) + " ";
+    for (std::size_t i = 0; i < m_size; ++i) result += std::to_string(i) + " ";
     result += "\n";
 
     int rowNum = 0;
@@ -43,7 +47,7 @@ std::string Board::displayForOwner() const {
 
 std::string Board::displayForOpponent() const {
     std::string result = "  ";
-    for (int i = 0; i < m_size; ++i) result += std::to_string(i) + " ";
+    for (std::size_t i = 0; i < m_size; ++i) result += std::to_string(i) + " ";
     result += "\n";
 
     int rowNum = 0;

@@ -10,6 +10,7 @@ public:
     explicit Board(std::size_t size = 10);
 
     [[nodiscard]] const std::vector<std::vector<Cell>>& getGrid() const;
+    [[nodiscard]] std::size_t getSize() const;
 
     bool placeShip(int x, int y);
     bool receiveAttack(int x, int y);
