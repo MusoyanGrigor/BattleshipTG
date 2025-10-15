@@ -114,11 +114,13 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
     }
 
     const bool hit = game->makeMove(player, x, y);
-    bot.getApi().sendMessage(message->chat->id, hit ? "💥 Hit!" : "🌊 Miss!");
+    const std::string hitMessage = hit ? "Hit! 💥 " : "Miss 🌊 ";
+    bot.getApi().sendMessage(message->chat->id, hitMessage);
 
     const Player* opponent = game->getOpponent(player);
+
     bot.getApi().sendMessage(std::stoll(opponent->getId()),
-        player->getName() + " made a move at (" + std::to_string(x) + "," + std::to_string(y) + ")");
+        player->getName() + " made a move at (" + std::to_string(x) + "," + std::to_string(y) + ")" + " and " + hitMessage);
 
     // Send boards after move
     bot.getApi().sendMessage(chatId, "Your board:\n" + player->getBoard().displayForOwner());
