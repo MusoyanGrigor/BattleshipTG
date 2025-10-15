@@ -9,6 +9,8 @@ Board& Player::getBoard() { return m_board; }
 const Board& Player::getBoard() const { return m_board; }
 std::string Player::getId() const { return m_id; }
 std::string Player::getName() const { return m_name; }
+std::size_t Player::getShipCount() const { return m_shipCount; }
+void Player::setShipCount(const std::size_t shipCount) { m_shipCount = shipCount; }
 
 void Player::placeShips(const std::size_t shipCount = 5) {
     static std::random_device rd;

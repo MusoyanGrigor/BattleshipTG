@@ -12,6 +12,8 @@ public:
     [[nodiscard]] const Board& getBoard() const;
     [[nodiscard]] std::string getId() const;
     [[nodiscard]] std::string getName() const;
+    [[nodiscard]] std::size_t getShipCount() const;
+    void setShipCount(std::size_t shipCount);
 
     void placeShips(std::size_t shipCount);
 
@@ -20,6 +22,7 @@ public:
 private:
     std::string m_id;
     std::string m_name;
+    std::size_t m_shipCount = 5;
     Board m_board;
 };
 
