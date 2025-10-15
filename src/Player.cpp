@@ -13,7 +13,7 @@ std::size_t Player::getShipCount() const { return m_shipCount; }
 void Player::setShipCount(const std::size_t shipCount) { m_shipCount = shipCount; }
 
 void Player::placeShips(const std::size_t shipCount) {
-    m_shipCount = shipCount;
+    setShipCount(shipCount);
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution dist(0, 9);
