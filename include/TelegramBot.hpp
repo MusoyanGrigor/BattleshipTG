@@ -22,8 +22,6 @@ private:
     void handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message::Ptr &message);
 
     static std::string generateGameID();
-
-
 };
 
 #endif // TELEGRAMBOT_HPP

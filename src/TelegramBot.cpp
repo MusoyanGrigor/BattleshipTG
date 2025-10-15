@@ -13,7 +13,7 @@ void TelegramBot::start() {
 
     bot.getEvents().onCommand("start", [&bot](const TgBot::Message::Ptr& message) {
         bot.getApi().sendMessage(message->chat->id,
-            "Welcome to Sea Battle! 🛳\nUse /newgame to start a game.");
+            "Welcome to BattleShip! 🛳\nUse /newgame to start a game.");
     });
 
     bot.getEvents().onCommand("newgame", [this, &bot](const TgBot::Message::Ptr& message) {
@@ -53,7 +53,8 @@ void TelegramBot::handleNewGameCommand(const TgBot::Bot& bot, const TgBot::Messa
 
 void TelegramBot::handleJoinCommand(const TgBot::Bot& bot, const TgBot::Message::Ptr &message) {
     std::istringstream iss(message->text);
-    std::string cmd, gameID;
+    std::string cmd;
+    std::string gameID;
     iss >> cmd >> gameID;
 
     if (!m_gamesByID.contains(gameID)) {
@@ -67,7 +68,7 @@ void TelegramBot::handleJoinCommand(const TgBot::Bot& bot, const TgBot::Message:
         return;
     }
 
-    auto player2 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
+    const auto player2 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
     player2->placeShips(5);
     game->setPlayer2(player2);
     m_chatToGame[std::to_string(message->chat->id)] = game->getGameID();
@@ -83,7 +84,7 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
         return;
     }
 
-    auto game = m_gamesByID[m_chatToGame[chatId]];
+    const auto game = m_gamesByID[m_chatToGame[chatId]];
     if (game->getGameState() != GameState::IN_PROGRESS) {
         bot.getApi().sendMessage(message->chat->id, "Game not in progress yet.");
         return;
@@ -98,10 +99,10 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
     const std::string text = message->text;
     std::istringstream iss(text);
 
-    std::string command{""};
+
     int x{0};
     int y{0};
-
+    std::string command;
     if (!(iss >> command >> x >> y) || command != "/move") {
         bot.getApi().sendMessage(message->chat->id, "Invalid format. Use /move x y");
         return;
@@ -125,8 +126,8 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
 
     // Check win
     if (game->checkWin()) {
-        bot.getApi().sendMessage(std::stoll(player->getId()), "🎉 You won!");
-        bot.getApi().sendMessage(std::stoll(opponent->getId()), "😢 You lost!");
+        bot.getApi().sendMessage(std::stoll(player->getId()), "😢 You lost!");
+        bot.getApi().sendMessage(std::stoll(opponent->getId()),  "🎉 You won!");
 
         m_chatToGame.erase(game->getPlayer1()->getId());
         m_chatToGame.erase(game->getPlayer2()->getId());
