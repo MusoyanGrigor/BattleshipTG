@@ -38,17 +38,20 @@ void TelegramBot::start() {
 void TelegramBot::handleNewGameCommand(const TgBot::Bot& bot, const TgBot::Message::Ptr &message) {
     const std::string chatId = std::to_string(message->chat->id);
     const std::string gameID = generateGameID();
-    constexpr std::size_t shipCount = 9;
 
     auto player1 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
-    player1->placeShips(shipCount);
+    player1->placeShips(player1->getShipCount());
 
     const auto game = std::make_shared<Game>(gameID, player1);
     m_gamesByID[gameID] = game;
     m_chatToGame[chatId] = gameID;
 
-    bot.getApi().sendMessage(message->chat->id,
-        "New game created! Share this code: " + gameID);
+    bot.getApi().sendMessage(
+        message->chat->id,
+        "New game created! Share this code: " + gameID + "\n" +
+        "Each player will have " + std::to_string(player1->getShipCount()) + " ships."
+    );
+
 }
 
 void TelegramBot::handleJoinCommand(const TgBot::Bot& bot, const TgBot::Message::Ptr &message) {
@@ -69,7 +72,7 @@ void TelegramBot::handleJoinCommand(const TgBot::Bot& bot, const TgBot::Message:
     }
 
     const auto player2 = std::make_shared<Player>(std::to_string(message->from->id), message->from->firstName);
-    player2->placeShips(5);
+    player2->placeShips(player2->getShipCount());
     game->setPlayer2(player2);
     m_chatToGame[std::to_string(message->chat->id)] = game->getGameID();
 
@@ -121,7 +124,9 @@ void TelegramBot::handleMoveCommand(const TgBot::Bot& bot, const TgBot::Message:
 
     bot.getApi().sendMessage(std::stoll(opponent->getId()),
         player->getName() + " made a move at (" + std::to_string(x) + "," + std::to_string(y) + ")" + " and " + hitMessage);
-
+    if (hit) {
+        bot.getApi().sendMessage(std::stoll(opponent->getId()), player->getName() + + "'s turn!");
+    }
     // Send boards after move
     bot.getApi().sendMessage(chatId, "Your board:\n" + player->getBoard().displayForOwner());
     bot.getApi().sendMessage(chatId, "Opponent's board:\n" + opponent->getBoard().displayForOpponent());
