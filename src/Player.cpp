@@ -12,13 +12,14 @@ std::string Player::getName() const { return m_name; }
 std::size_t Player::getShipCount() const { return m_shipCount; }
 void Player::setShipCount(const std::size_t shipCount) { m_shipCount = shipCount; }
 
-void Player::placeShips(const std::size_t shipCount = 5) {
+void Player::placeShips(const std::size_t shipCount) {
+    m_shipCount = shipCount;
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution dist(0, 9);
 
     int placed = 0;
-    while (placed < shipCount) {
+    while (placed < m_shipCount) {
         const int x = dist(gen);
         const int y = dist(gen);
         if (m_board.placeShip(x, y)) placed++;
