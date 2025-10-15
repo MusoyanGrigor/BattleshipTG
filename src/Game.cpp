@@ -52,8 +52,8 @@ bool Game::makeMove(Player *player, const int x, const int y) {
     if (!player || !getOpponent(player)) return false;
     if (player != getCurrentPlayer()) return false;
 
-    const bool hit = player->attack(*getOpponent(player), x, y);
-    m_currentTurn = 3 - m_currentTurn; // Switch turn
+    const bool hit = Player::attack(*getOpponent(player), x, y);
+    if (!hit) m_currentTurn = 3 - m_currentTurn; // Switch turn
     return hit;
 }
 
