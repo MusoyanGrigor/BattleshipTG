@@ -11,23 +11,23 @@ class Game {
 public:
     Game(std::string id, std::shared_ptr<Player> p1);
 
-    std::string getGameID() const;
-    std::shared_ptr<Player> getPlayer1() const;
-    std::shared_ptr<Player> getPlayer2() const;
-    int getCurrentTurn() const;
-    GameState getGameState() const;
+    [[nodiscard]] std::string getGameID() const;
+    [[nodiscard]] std::shared_ptr<Player> getPlayer1() const;
+    [[nodiscard]] std::shared_ptr<Player> getPlayer2() const;
+    [[nodiscard]] int getCurrentTurn() const;
+    [[nodiscard]] GameState getGameState() const;
 
     void setPlayer1(std::shared_ptr<Player> p1);
     void setPlayer2(std::shared_ptr<Player> p2);
 
     Player* getCurrentPlayer();
-    const Player* getCurrentPlayer() const;
+    [[nodiscard]] const Player* getCurrentPlayer() const;
 
     Player* getOpponent(Player* player) const;
     const Player* getOpponent(const Player* player) const;
 
     bool makeMove(Player* player, int x, int y);
-    bool checkWin() const;
+    [[nodiscard]] bool checkWin() const;
 
 private:
     std::string m_gameID;

@@ -10,8 +10,8 @@ public:
 
     Board& getBoard();
     [[nodiscard]] const Board& getBoard() const;
-    std::string getId() const;
-    std::string getName() const;
+    [[nodiscard]] std::string getId() const;
+    [[nodiscard]] std::string getName() const;
 
     void placeShips(std::size_t shipCount);
 
