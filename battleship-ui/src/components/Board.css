@@ -1,0 +1,23 @@
+.board-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 50px;
+    padding: 30px;
+    background: linear-gradient(145deg, #050c38, #101842); /* subtle board gradient */
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(103, 0, 163, 0.6);
+}
+
+.board-title {
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.4rem;
+    color: #ff5a57;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 6px #6700A3;
+}
+
+div > div > div {
+    display: flex;
+}
