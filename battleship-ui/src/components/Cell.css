@@ -1,0 +1,41 @@
+.cell {
+    width: 45px;
+    height: 45px;
+    margin: 3px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.cell.empty {
+    background: linear-gradient(145deg, #050c38, #0a0f4d);
+    border: 1px solid #101842;
+}
+
+.cell.ship {
+    background: linear-gradient(145deg, #6700A3, #330065);
+    border: 2px solid #6700A3;
+    box-shadow: 0 0 12px #6700A3;
+}
+
+.cell.hit {
+    background: linear-gradient(145deg, #ff5a57, #ff1f3a);
+    box-shadow: 0 0 15px #ff5a57, 0 0 25px #ff1f3a;
+    transform: scale(1.1);
+}
+
+.cell.miss {
+    background: linear-gradient(145deg, #050c38, #101842);
+    border: 2px solid #ff5a57;
+    transform: scale(1.05);
+}
+
+.cell:hover {
+    filter: brightness(1.2);
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #6700A3, 0 0 20px #ff5a57;
+}
