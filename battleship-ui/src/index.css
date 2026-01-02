@@ -1,0 +1,20 @@
+.board {
+  display: grid;
+  gap: 2px;
+}
+
+.cell {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.cell.X {
+  background-color: #ff6b6b;
+}
+
+.cell.O {
+  background-color: #4dabf7;
+}
