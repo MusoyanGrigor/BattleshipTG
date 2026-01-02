@@ -23,10 +23,6 @@ public:
         m_gamesByID[gameID] = std::move(game);
     }
 
-    void sendPhotoToGame(const std::string& gameID,
-                     const std::string& filePath,
-                     const std::string& caption = "");
-
 private:
     std::string m_token;
     std::unordered_map<std::string, std::shared_ptr<Game>> m_gamesByID;
