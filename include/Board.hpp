@@ -3,7 +3,16 @@
 
 #include <vector>
 #include <string>
+#include <nlohmann/json.hpp>
+
 #include "Cell.hpp"
+
+enum class CellState {
+    Empty, // no ship, not hit
+    Ship,  // ship present, not hit
+    Hit,   // ship hit
+    Miss   // empty cell hit
+};
 
 class Board {
 public:
@@ -17,6 +26,12 @@ public:
 
     [[nodiscard]] std::string displayForOwner() const;
     [[nodiscard]] std::string displayForOpponent() const;
+
+    [[nodiscard]] CellState getCellState(int x, int y, bool ownerView) const;
+
+    [[nodiscard]] std::vector<std::vector<CellState>> getBoardState(bool ownerView) const;
+
+    [[nodiscard]] nlohmann::json toJson(bool ownerView) const;
 
 private:
     std::vector<std::vector<Cell>> m_grid;
